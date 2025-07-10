@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+httpx
+python-multipart
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+pandas
+PyMuPDF
+pytesseract
+sentence-transformers
+qdrant-client
+python-dotenv
+fastapi
+uvicorn
+python-dotenv
