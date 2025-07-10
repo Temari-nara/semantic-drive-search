@@ -5,7 +5,7 @@ This project allows you to **intelligently search documents** stored in your Goo
 - ✅ Google Drive API (to fetch files)
 - ✅ Sentence Transformers (`MiniLM`) for embedding document text
 - ✅ Qdrant (Vector DB) to store embeddings + metadata
-- ✅ FastAPI for RESTful `/search` endpoint
+- ✅ FastAPI for RESTful `/search` , `/sync` endpoint
 - ✅ Streamlit (optional) for a simple web UI
 
 ---
@@ -278,7 +278,7 @@ cd <project-folder>
   }
 
 📁 Folder Structure
-project-root/
+Document-semantic-search/
 ├── .env
 ├── credentials.json
 ├── token.json
