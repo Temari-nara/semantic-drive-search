@@ -1,0 +1,244 @@
+docker notes- 
+A way to package application with all the memory dependencies and configuaration.
+
+
+Dockerfile:
+
+FROM
+COPY
+WORKDIR
+RUN
+CMD
+
+
+
+COMMANDS TO USE TO BUILD THE DOCKER FILE:
+
+>docker -t <dockerimagename> .
+
+>docker images  [to see the docker image]
+
+>docker run -p  hostport:containerport <dockerimagename>
+
+>docker ps 
+
+>docker stop <container-id>
+
+>docker image rm -f <imageid>
+
+>docker login
+
+
+>TO PUSH TO DOCKER HUB
+
+>docker push username/<dockerimagename>:latest
+
+TO PULL A DOCKER IMAGE:
+
+>docker pull username/<dockerimagename>:latest
+
+
+DOCKER COMPOSE - DEFINING AND RUNNING MULTI CONTAINER APPLICATIONS - LIKE IF WE HAVE MULTIPLE COMPONENTS SUCH AS REDIS, POSTGRESQL ETC
+
+CREATE A DOCKER FILE
+
+Dockerfile
+
+FROM python:3.7-alpine
+WORKDIR /<workdir-name>
+ENV FLASK_APP = app.py
+ENV FLASK_RUN_HOST = 0.0.0.0
+COPY  . . ==>COPYING ALL THE FILE'S FROM THE CURRENT WORKDIR TO <workdir-name>
+RUN pip install -r requirements.txt
+EXPOSE 5000
+CMD  ["flask","run"]
+
+docker-compose.yml
+
+version : "3.0"
+services:
+	web:
+	  build: .
+	  ports:
+	   - "<hostport>:<containerport>"
+	redis:
+	  image: redis
+	MySQL:
+	  image : mysql 
+
+
+TO EXECUTE/RUN DOCKER COMPOSE:
+
+docker compose up 
+
+
+==========================================================Explaination======================================================================================
+
+
+🐳 Docker Crash Course Notes (Simplified & Enhanced)
+📦 What is Docker?
+Docker is a tool that allows you to package an application along with all its dependencies (like libraries and configurations) into a single unit called a container. This ensures that the application runs consistently across different environments.
+
+🛠️ Dockerfile Essentials
+A Dockerfile is a script containing a series of instructions to build a Docker image. Think of it as a recipe for creating your application's environment.
+
+
+Common Dockerfile Commands:
+=================================================================
+FROM: Specifies the base image to use (e.g., FROM python:3.7-alpine).
+
+COPY: Copies files from your local machine into the Docker image.
+
+WORKDIR: Sets the working directory inside the container.
+
+RUN: Executes commands during the image build process (e.g., installing dependencies).
+
+CMD: Specifies the default command to run when the container starts.
+
+
+Building and Managing Docker Images
+======================================================
+Building an Image:
+------------------
+
+docker build -t <dockerimagename> .
+
+-t tags the image with a name.
+
+Viewing Images:
+--------------
+
+docker images
+Lists all Docker images on your system.
+
+
+Running a Container:
+-------------------
+
+docker run -p <hostport>:<containerport> <dockerimagename>
+-p maps a port on your machine to a port in the container.
+
+Managing Containers:
+List running containers:
+-----------------------
+docker ps
+
+Stop a container:
+----------------
+
+docker stop <container-id>
+
+
+Remove an image:
+---------------
+docker image rm -f <imageid>
+
+
+Docker Hub Operations
+
+🐳 Docker Hub
+Docker Hub is a cloud-based registry that allows you to store, share, and manage Docker images.
+
+🔑 Key Benefits:
+Image Hosting: Store your Docker images in public or private repositories.
+
+Sharing: Easily share images with your team or the community.
+
+CI/CD Integration: Integrates with CI/CD tools (like GitHub Actions, Jenkins) to automate builds and deployments.
+
+Automated Builds: Automatically build images when code changes are pushed to your repository.
+
+Webhooks: Trigger actions (like deployments) when new images are pushed.
+
+Security Scanning: Scan images for vulnerabilities (available in paid plans).
+
+📌 Usage Notes:
+You can pull public images without an account, but having a Docker Hub account increases your pull rate limits and allows you to push your own images.
+
+For CI/CD pipelines and sharing images across environments, Docker Hub serves as a centralized and reliable registry.
+
+===============================================================
+Logging In:
+-----------
+
+docker login
+Authenticates your Docker CLI with Docker Hub.
+
+Pushing an Image:
+----------------
+
+docker push username/<dockerimagename>:latest
+Uploads your image to Docker Hub.
+
+Pulling an Image:
+----------------
+
+docker pull username/<dockerimagename>:latest
+Downloads an image from Docker Hub.
+
+🧱 Docker Compose: Managing Multi-Container Applications
+Docker Compose allows you to define and run multi-container Docker applications using a YAML file.
+
+Example docker-compose.yml:
+yaml
+Copy
+Edit
+version: "3.0"
+services:
+  web:
+    build: .
+    ports:
+      - "<hostport>:<containerport>"
+  redis:
+    image: redis
+  mysql:
+    image: mysql
+
+Defines three services: web, redis, and mysql.
+
+Running Docker Compose:
+----------------------
+
+docker-compose up
+Builds and starts all services defined in the docker-compose.yml file.
+
+📝 Sample Dockerfile Explained
+dockerfile
+
+FROM python:3.7-alpine
+WORKDIR /<workdir-name>
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+COPY . .
+RUN pip install -r requirements.txt
+EXPOSE 5000
+CMD ["flask", "run"]
+
+Explanation:
+-----------
+FROM: Uses a lightweight Python image as the base.
+
+WORKDIR: Sets the working directory inside the container.
+
+ENV: Sets environment variables for Flask.
+
+COPY: Copies all files from the current directory to the container.
+
+RUN: Installs Python dependencies.
+
+EXPOSE: Indicates the port the application will run on.
+
+CMD: Specifies the command to start the Flask application.
+
+🧠 Additional Tips
+.dockerignore: Use this file to exclude files and directories from being copied into the Docker image, similar to .gitignore.
+
+Layer Caching: Docker caches layers to speed up builds. Changing earlier layers can invalidate the cache for subsequent layers.
+
+Best Practices:
+
+Keep images lightweight by using minimal base images.
+
+Combine RUN commands to reduce the number of layers.
+
+Regularly clean up unused images and containers to free up space.

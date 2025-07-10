@@ -54,17 +54,77 @@ cd <project-folder>
   pip install -r requirements.txt
 
 ### 4. 🔐 Set Up Google Drive API
-  Go to Google Cloud Console
+  🔑 How to Set Up Google Drive API Credentials
+  To allow the application to access your Google Drive, follow these steps to create your own credentials.json file:
 
-  Create a project and enable Google Drive API
+  ✅ Step 1: Go to Google Cloud Console
+  Visit: https://console.cloud.google.com/
 
-  Create OAuth 2.0 Client ID (Desktop App)
+  Sign in with your Google account
 
-  Download the credentials.json file
+  ✅ Step 2: Create a New Project
+  Click the project dropdown (top bar)
 
-  Place it in your project root
+  Click “New Project”
+
+  Give it a name like Semantic Search and click Create
+
+  ✅ Step 3: Enable Google Drive API
+  In the left sidebar, go to APIs & Services > Library
+
+  Search for “Google Drive API”
+
+  Click it, then click “Enable”
+
+  ✅ Step 4: Create OAuth 2.0 Credentials
+  Go to APIs & Services > Credentials
+
+  Click “+ CREATE CREDENTIALS” > “OAuth client ID”
+
+  If prompted, configure the OAuth consent screen:
+
+  Choose External, click Create
+
+  Fill in the App name (e.g., DocSearchApp)
+
+  Add your email for support and developer contact
+
+  Click Save and Continue until you reach the final step
+
+  Then:
+
+  Choose Application type = Desktop App
+
+  Name it (e.g., Drive Desktop Client)
+
+  Click Create
+
+  ✅ Step 5: Download credentials.json
+  After creating the client, click Download JSON
+
+  Rename the file to credentials.json if needed
+
+  Move it to the root folder of this project
+
+  ✅ Done! The first time you run the app, it will open a browser to authenticate and auto-generate token.json.
 
   ✅ On first run, the app will prompt login and generate token.json
+
+  Please Note*
+  🔐 Google Authentication
+  When you run the app for the first time, it will:
+
+  Open a browser window
+
+  Ask you to log in with your Google account
+
+  Request access to your Drive folder
+
+  ✅ After login, it will auto-generate a token.json file on your machine
+
+  Note: You do not need to create token.json manually. Just run python test_drive.py or trigger /sync, and it will be created after successful login.
+
+  
 
 ### 5. 🔍 Get Your Google Drive Folder ID
   Run the helper script to list all folders in your Google Drive:
