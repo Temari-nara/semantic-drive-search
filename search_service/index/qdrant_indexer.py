@@ -21,11 +21,11 @@ class QdrantIndexer:
             id=str(uuid.uuid4()),
             vector=vector,
             payload={
-                "file_id": file_id,              # ✅ add file_id
+                "file_id": file_id,              
                 "file_name": file_name,
                 "file_url": file_url,
                 "content": content,
-                "folder": folder                 # ✅ optional: for display
+                "folder": folder                
             }
         )
         self.client.upsert(collection_name=self.collection_name, points=[point])
