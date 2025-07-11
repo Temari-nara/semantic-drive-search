@@ -206,7 +206,7 @@ project-root/
 ☁️ Deploy on Hugging Face, EC2, or Azure App Service
 
 👩‍💻 Developed By
-Kavitha Jain
+Kavita Jain
 AI Engineer & Architect
 📧 kavijain1011@gmail.com
 🔗 [LinkedIn] (https://www.linkedin.com/in/kavita-jain-b88ab11ba/)
