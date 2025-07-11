@@ -24,7 +24,6 @@ This project lets you **intelligently search documents stored in your Google Dri
 
 ## ⚙️ Prerequisites
 
-- Python 3.8+
 - Google Cloud account (for Drive API)
 - Qdrant Cloud account
 - Git + terminal access
@@ -172,9 +171,7 @@ Get file name, Drive link, and a content preview
 }
 
 📁 Folder Structure
-pgsql
-Copy
-Edit
+
 project-root/
 ├── .env
 ├── credentials.json
