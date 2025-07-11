@@ -2,3 +2,4 @@
 credentials.json
 token.json
 qdrantcreds.py
+__pycache__
