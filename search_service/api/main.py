@@ -7,6 +7,10 @@ from search_service.embedding.local_embedder import LocalEmbedder
 from search_service.index.qdrant_indexer import QdrantIndexer
 from fastapi import BackgroundTasks
 from search_service.pipeline.sync_pipeline import run_full_sync 
+from helper_list_folders import get_all_drive_folders
+
+
+
 
 app = FastAPI(title="Document Search API")
 
@@ -47,3 +51,8 @@ def sync_documents(background_tasks: BackgroundTasks):
     # run in background so the HTTP call returns immediately
     background_tasks.add_task(run_full_sync)
     return {"message": "Sync started – check logs for progress."}
+
+@app.get("/list-folders")
+def list_drive_folders():
+    """Expose Drive folders via API for Streamlit UI."""
+    return get_all_drive_folders()

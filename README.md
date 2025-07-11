@@ -1,23 +1,24 @@
-#  AI-Powered Semantic Document Search (Google Drive + Qdrant)
+# 📄 AI-Powered Semantic Document Search (Google Drive + Qdrant)
 
-This project allows you to **intelligently search documents** stored in your Google Drive using **semantic similarity** (not just keyword match). It uses:
+This project lets you **intelligently search documents stored in your Google Drive** using semantic similarity (powered by embeddings) — not just keyword match. It supports:
 
-- ✅ Google Drive API (to fetch files)
-- ✅ Sentence Transformers (`MiniLM`) for embedding document text
-- ✅ Qdrant (Vector DB) to store embeddings + metadata
-- ✅ FastAPI for RESTful `/search` , `/sync` endpoint
-- ✅ Streamlit (optional) for a simple web UI
+- ✅ Google Drive API (to fetch documents)
+- ✅ Sentence Transformers (`MiniLM`) for generating embeddings
+- ✅ Qdrant (Vector DB) to store and search vectors
+- ✅ FastAPI backend for `/search` and `/sync`
+- ✅ Streamlit frontend for a simple and clean UI
 
 ---
 
-## 📦 Features
+## ✨ Features
 
-- 🔐 Secure Google Drive access
-- 📂 Supports `.pdf`, `.txt`, `.csv`, and `.png` (OCR)
-- 🧠 Semantic embedding with `sentence-transformers`
-- 📡 Search powered by **Qdrant vector similarity**
-- 🖼️ Returns file name, Drive link, and content preview
-- 🎯 Easily configurable with `.env`
+- 🔐 Google OAuth2 login for secure Drive access
+- 📂 Supports `.pdf`, `.txt`, `.csv`, `.png` (OCR)
+- 🧠 Fast semantic search via vector embeddings
+- 📡 Real-time vector indexing with Qdrant
+- 🔍 Incremental sync (only new files are indexed)
+- 🖼️ Streamlit UI for search and sync
+- 🛠️ Configurable via `.env`
 
 ---
 
@@ -25,265 +26,161 @@ This project allows you to **intelligently search documents** stored in your Goo
 
 - Python 3.8+
 - Google Cloud account (for Drive API)
-- Qdrant Cloud account (for vector DB)
+- Qdrant Cloud account
 - Git + terminal access
 
 ---
 
 ## 🛠️ Setup Instructions
 
-### 1. 📥 Clone the Project
+### 1. 📥 Clone the Repository
 
 ```bash
-git clone git clone https://github.com/Temari-nara/Doc_Search_Cloud_Storage.git
-cd <project-folder>
+git clone https://github.com/Temari-nara/Doc_Search_Cloud_Storage.git
+cd Doc_Search_Cloud_Storage
+2. 🐍 Create and Activate Virtual Environment
+🪟 On Windows:
 
-### 2. 🐍 Set Up Virtual Environment
-  🪟 On Windows:
+python -m venv venv
+venv\Scripts\activate
 
-  python -m venv venv
-  venv\Scripts\activate
+🍎 On macOS / Linux:
 
-  🍎 On macOS / Linux:
+python3 -m venv venv
+source venv/bin/activate
 
-  python3 -m venv venv
-  source venv/bin/activate
+3. 📦 Install Requirements
+pip install -r requirements.txt
 
-### 3. 📦 Install Requirements
+4. 🔐 Set Up Google Drive API Access
+Follow these steps to create credentials.json:
 
-  pip install -r requirements.txt
+Visit Google Cloud Console
 
-### 4. 🔐 Set Up Google Drive API
-  🔑 How to Set Up Google Drive API Credentials
-  To allow the application to access your Google Drive, follow these steps to create your own credentials.json file:
+Create a new project (e.g., SemanticSearch)
 
-  ✅ Step 1: Go to Google Cloud Console
-  Visit: https://console.cloud.google.com/
+Go to APIs & Services → Library
 
-  Sign in with your Google account
+Search and enable Google Drive API
 
-  ✅ Step 2: Create a New Project
-  Click the project dropdown (top bar)
+Go to APIs & Services → Credentials
 
-  Click “New Project”
+Click “+ CREATE CREDENTIALS” → “OAuth Client ID”
 
-  Give it a name like Semantic Search and click Create
+Choose Application Type: Desktop App
 
-  ✅ Step 3: Enable Google Drive API
-  In the left sidebar, go to APIs & Services > Library
+Download the credentials.json file
 
-  Search for “Google Drive API”
+Place it in the project root
 
-  Click it, then click “Enable”
+✅ On first run, the app will open a browser and prompt for Google login.
+It will then auto-generate token.json (user access token).
 
-  ✅ Step 4: Create OAuth 2.0 Credentials
-  Go to APIs & Services > Credentials
 
-  Click “+ CREATE CREDENTIALS” > “OAuth client ID”
 
-  If prompted, configure the OAuth consent screen:
+5. 📁 Get Google Drive Folder ID (2 Options)
+✅ Option A: From Streamlit UI
+Run the UI: streamlit run ui/app.py
 
-  Choose External, click Create
+Click "🔄 Load My Folders" in the sidebar
 
-  Fill in the App name (e.g., DocSearchApp)
+Select a folder → it will display the folder ID to copy into .env
 
-  Add your email for support and developer contact
+🔍 Option B: From Terminal
 
-  Click Save and Continue until you reach the final step
+python helper_list_folders.py
+You’ll see:
+📁 Your Folders:
+Name: Invoices | ID: 1AbCdEfGhIjK...
+Name: HR Docs | ID: 1XyZ123...
+Copy the desired folder ID.
 
-  Then:
+6. 🔐 Set Up Qdrant Cloud
+Visit Qdrant Cloud
 
-  Choose Application type = Desktop App
+Create a Sandbox Cluster
 
-  Name it (e.g., Drive Desktop Client)
+Copy your:
 
-  Click Create
+QDRANT_URL
 
-  ✅ Step 5: Download credentials.json
-  After creating the client, click Download JSON
+QDRANT_API_KEY
 
-  Rename the file to credentials.json if needed
+7. ⚙️ Create .env File
+In your root directory, create a .env file:
 
-  Move it to the root folder of this project
+DRIVE_FOLDER_ID=your-google-drive-folder-id
+QDRANT_URL=https://your-cluster.qdrant.cloud
+QDRANT_API_KEY=your-qdrant-api-key
 
-  ✅ Done! The first time you run the app, it will open a browser to authenticate and auto-generate token.json.
+8. 📂 Upload Documents to Google Drive
+Place your .pdf, .txt, .csv, or .png files in the Drive folder you selected above.
 
-  ✅ On first run, the app will prompt login and generate token.json
+✅ No need to upload files locally.
 
-  Please Note*
-  🔐 Google Authentication
-  When you run the app for the first time, it will:
+9. 🔄 Sync Documents from Drive (2 Options)
+🖱️ Option A: From Streamlit UI
+Open the app with:
+streamlit run ui/app.py
 
-  Open a browser window
+In the sidebar, click “🔄 Sync Documents”
 
-  Ask you to log in with your Google account
+This will:
 
-  Request access to your Drive folder
+Fetch new files
 
-  ✅ After login, it will auto-generate a token.json file on your machine
+Parse and embed content
 
-  Note: You do not need to create token.json manually. Just run python test_drive.py or trigger /sync, and it will be created after successful login.
+Store vectors in Qdrant
 
-  
+✅ Already indexed files will be skipped (incremental sync)
 
-### 5. 🔍 Get Your Google Drive Folder ID
-  Run the helper script to list all folders in your Google Drive:
-  python helper_list_folders.py
-  Output:
+🔗 Option B: Use Sync API
 
+curl -X POST http://localhost:8000/sync
+Returns:
 
-  📁 Your Folders:
+Edit
+{ "message": "Sync started – check logs for progress." }
+✅ This runs in the background — non-blocking.
 
-  Name: Invoices | ID: 1AbCdEfGhIjK...
-  Name: HR Docs | ID: 1XyZ123...
-  Choose a folder and copy its ID.
+10. 🚀 Start the FastAPI Backend
+uvicorn search_service.api.main:app --reload
+Open http://localhost:8000/docs to view and test:
 
-### 6. 🔐 Set Up Qdrant Cloud
-  Go to https://cloud.qdrant.io
+GET /search?q=your_query
 
-  Sign up and create a new Sandbox cluster
+POST /sync
 
-  Copy the Cluster URL (e.g., https://abc123.qdrant.cloud)
+11. 🖼️ Use the Streamlit UI (Optional but Friendly)
+streamlit run ui/app.py
+Go to: http://localhost:8501
 
-  Go to API Keys → create one → copy it
+Enter your query to search semantically
 
-### 7. ⚙️ Create .env File
-  Create a .env file in the root directory and add:
+Get file name, Drive link, and a content preview
 
-  env
-
-  DRIVE_FOLDER_ID=your-google-drive-folder-id
-  QDRANT_URL=https://your-qdrant-cluster.qdrant.cloud
-  QDRANT_API_KEY=your-qdrant-api-key
-
-### 8. 📂 Upload Documents to Drive
-  Place supported files in your Drive folder:
-
-  .pdf
-
-  .txt
-
-  .csv
-
-  .png (will use OCR)
-
-### 9. 🚀 Index the Files
-
-  python test_drive.py
-  ✅ This will:
-
-  Fetch all files from the folder
-
-  Parse and embed text
-
-  Store in Qdrant Cloud
-### 10. 🔍 Start the Search API” (with Postman step)
-
-  Start the FastAPI server using:
-
-  ```bash
-  uvicorn search_service.api.main:app --reload
-  Once running, visit the interactive Swagger UI:
-
-
-  http://localhost:8000/docs
-  You can test the /search endpoint from here.
-
-  🧪 (Optional) Test the API in Postman
-  Open Postman
-
-  Create a new GET request
-
-  Use the following URL:
-
-
-  http://localhost:8000/search?q=your_query
-  For example:
-
-
-  http://localhost:8000/search?q=loan policy
-  Click Send
-
-  ✅ You’ll receive a JSON response with:
-
-  Matching file names
-
-  Their Google Drive URLs
-
-  A preview snippet from each document
-
-
-  [
+🔍 Sample Output
+{
+  "results": [
     {
       "file_name": "loan_policy.pdf",
-      "file_url": "https://drive.google.com/...",
-      "preview": "This document covers the repayment and interest terms..."
-    },
-    ...
+      "file_url": "https://drive.google.com/file/d/...",
+      "preview": "This document outlines the policy regarding interest rates..."
+    }
   ]
-
-### 12. 🔄 Sync Newly Added Documents
-  After uploading a new file to your configured Drive folder, you can sync it without restarting the app or re-running the script.
-
-  This project supports incremental sync, which means:
-
-  ✅ Already indexed files are skipped
-
-  ✅ Only new documents are embedded and stored
-
-  🖱️ Option 1: Click “🔄 Sync Documents” in Streamlit
-  In the Streamlit sidebar:
-
-  Click “🔄 Sync Documents”
-
-  This will:
-
-  Fetch new files from Drive
-
-  Parse and embed content
-
-  Store vectors in Qdrant
-
-  You’ll see a success message like:
-
-  Sync kicked off! Refresh results in ~1–2 min.
-
-  🔗 Option 2: Trigger Sync via API
-  You can also hit the sync endpoint using curl, Postman, or any HTTP client:
-
-
-  curl -X POST http://localhost:8000/sync
-  Response:
-
-  { "message": "Sync started – check logs for progress." }
-  ✅ This uses FastAPI BackgroundTasks so the server stays responsive.
-
-### 12. (Optional) 🖼️ Run the Streamlit UI
-
-  streamlit run ui/app.py
-  Open your browser at:
-
-
-  http://localhost:8501
-  🔍 Sample Output
-
-  {
-    "results": [
-      {
-        "file_name": "loan_policy.pdf",
-        "file_url": "https://drive.google.com/file/d/...",
-        "preview": "This document outlines the policy regarding interest rates..."
-      }
-    ]
-  }
+}
 
 📁 Folder Structure
-Document-semantic-search/
+pgsql
+Copy
+Edit
+project-root/
 ├── .env
 ├── credentials.json
-├── token.json
-├── test_drive.py
+├── token.json  ← auto-generated
 ├── helper_list_folders.py
+├── test_drive.py
 ├── requirements.txt
 ├── README.md
 ├── search_service/
@@ -292,34 +189,27 @@ Document-semantic-search/
 │   ├── cloud/
 │   │   └── google_drive_client.py
 │   ├── parser/
-│   │   └── [csv, pdf, txt, image]_parser.py
+│   │   └── [csv|txt|pdf|image]_parser.py
 │   ├── index/
 │   │   └── qdrant_indexer.py
 │   └── embedding/
 │       └── local_embedder.py
 └── ui/
-    └── app.py  # Streamlit UI
-
-
+    └── app.py
+    
 💡 Future Enhancements
 🗂️ Multi-folder recursive indexing
 
-🔍 Filtered search by file type or folder
+🔍 Filtered search by file type, folder, or tags
 
-🧠 Integrate LLM (e.g., GPT) for Q&A
+🧠 LLM-based summarization or Q&A (e.g., OpenAI/Gemini)
 
-🔐 Secure API with authentication
+🔐 API authentication layer
 
-☁️ Deploy on Hugging Face, EC2, or Azure
+☁️ Deploy on Hugging Face, EC2, or Azure App Service
 
-👩‍💻 Developed by
-Kavita Jain
+👩‍💻 Developed By
+Kavitha Jain
 AI Engineer & Architect
-🌐 https://www.linkedin.com/in/kavita-jain-b88ab11ba/
 📧 kavijain1011@gmail.com
-
-
-
-
-
-
+🔗 [LinkedIn] (https://www.linkedin.com/in/kavita-jain-b88ab11ba/)
